@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Artist Profile</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+
+        <!-- Header -->
+        <header class="header">
+            <h2>The Makers Gallery</h2>
+            <h4>by</h4>
+            <img class="logo" 
+                src="images/logo.jpg" 
+                alt="Artmatic Logo">
+
+            <!-- Navigation bar -->
+            <nav class="nav-bar">
+                <div class="dropdown">
+                    <button class="nav-btn">Disciplines</button>
+                    <div class="dropdown-content">
+                        <a href="film.html">Video Production</a>
+                        <a href="#">Design</a>
+                        <a href="#">Animation/Game Design</a>
+                        <a href="#">Studio Arts</a>
+                    </div>
+                </div>
+
+                <button class="nav-btn">Profile</button>
+                <button id="about" class="nav-btn">About</button>
+                <button id="contact" class="nav-btn">Contact</button>
+                <button id="home" class="nav-btn">Home</button>
+            </nav>
+        </header>
+
+        <!-- Main Profile Section -->
+        <section class="profile-section">
+
+            <!-- Left: Main Image -->
+            <img class="profile-img" 
+                src="images/chase.jpg" 
+                alt="Profile Photo">
+
+            <!-- Right: Name + Bio + Social Icons -->
+            <div class="bio-column">
+                <h1 class="artist-name">Chase Cooke</h1>
+
+                <p class="bio-text">
+                    With years of hands-on experience under my belt, I sought to broaden my creative horizons, 
+                    exploring how to visually convey narratives. I’ve had the privilege of using my expertise 
+                    in various projects, assisting others in bringing their stories to life. I have enjoyed 
+                    every path it has led me down, and being able to share our visions with the world.
+                </p>
+                <p><a target="_blank" href="https://www.cookeproduced.com/">See Chase's work</a></p>
+
+                <div class="social-icons">
+                    <a target="_blank" href="https://www.linkedin.com/in/chase-cooke-a41337302/"><img src="images/insta.jpg" alt="Instagram"></a>
+                    <a target="_blank" href="https://www.instagram.com/cookeproduced/"><img src="images/linkedin.png" alt="LinkedIn"></a>
+                    <a target="_blank" href="https://www.youtube.com/@producedbycooke"><img src="images/youtube.png" alt="YouTube"></a>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Gallery Section -->
+        <section class="gallery">
+            <img src="images/car.png" class="gallery-img">
+            <img src="images/fashion.png" class="gallery-img">
+            <img src="images/hoop.png" class="gallery-img">
+        </section>
+        <script src="scripts.js"></script>
+    </body>
+</html>

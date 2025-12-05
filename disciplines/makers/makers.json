@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Jane Doe",
+        "major": "Media Arts",
+        "discipline": "Design",
+        "portfolio":"https://elenamaddoxart.myportfolio.com/",
+        "headshot-link": "images/janeDoe.jpg"
+    },
+    {
+        "name": "John Doe",
+        "major": "Studio Arts",
+        "discipline":"Ceramics",
+        "portfolio":"https://elenamaddoxart.myportfolio.com/",
+        "headshotLink": "images/johnDoe.jpg"
+    }
+
+]

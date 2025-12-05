@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Test</title>
+</head>
+<body>
+    <h1>Testing Navigation Buttons</h1>
+    
+    <button id="profile">Profile Button</button>
+    <button id="about">About Button</button>
+    <button id="contact">Contact Button</button>
+    <button id="home">Home Button</button>
+    
+    <div id="output" style="margin-top: 20px; padding: 10px; background: #f0f0f0;">
+        <p>Click status will appear here...</p>
+    </div>
+
+    <script>
+        // Test if scripts.js is working
+        console.log("Test page loaded");
+        
+        // Simple page navigation (buttons that exist on multiple pages)
+        const navMap = [
+            ['home', 'index.html'],
+            ['contact', 'contact.html'],
+            ['about', 'about.html'],
+            ['profile', 'login.html']
+        ];
+
+        const output = document.getElementById('output');
+        
+        navMap.forEach(([id, href]) => {
+            const el = document.getElementById(id);
+            console.log(`Looking for button with id="${id}":`, el);
+            
+            if (el) {
+                el.addEventListener('click', () => { 
+                    output.innerHTML = `<p>Button "${id}" clicked! Would redirect to: ${href}</p>`;
+                    console.log(`Redirecting to ${href}`);
+                    // Comment out actual redirect for testing
+                    // window.location.href = href; 
+                });
+            } else {
+                output.innerHTML += `<p style="color:red;">Button with id="${id}" not found!</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

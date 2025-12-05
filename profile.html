@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - The Maker's Gallery</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="profile.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-container">
+            <img src="images/logo2.png" alt="Artmatic logo" class="logo">
+        </div>
+        <h1 class="title">The Maker's Gallery</h1>
+    </div>
+
+    <!-- Navigation bar -->
+    <nav class="nav-bar">
+        <div class="dropdown">
+            <button class="nav-btn profile-nav-btn">Disciplines</button>
+            <div class="dropdown-content">
+                <a href="disciplines/film.html">Video Production</a>
+                <a href="disciplines/design.html">Design</a>
+                <a href="disciplines/animation.html">Animation/Game Design</a>
+                <a href="disciplines/studio-arts.html">Studio Arts</a>
+            </div>
+        </div>
+
+        <button id="profile" class="nav-btn profile-nav-btn">Profile</button>
+        <button class="nav-btn profile-nav-btn" onclick="location.href='about.html'">About</button>
+        <button class="nav-btn profile-nav-btn" onclick="location.href='contact.html'">Contact</button>
+        <button class="nav-btn profile-nav-btn" onclick="location.href='index.html'">Home</button>
+    </nav>
+
+    <!-- User Profile Section -->
+    <div id="profileContent" class="profile-wrapper">
+        <div class="user-info-header">
+            <h2 id="welcomeMessage" class="welcome-text"></h2>
+            <div id="userTypeBadge" class="user-badge"></div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="profile-section">
+            <!-- Profile placeholder content -->
+            <div class="profile-content">
+                <h3>Your Profile</h3>
+                <p>Welcome to your profile page! This is where you view your settings and log in/out.</p>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Username:</span>
+                        <span id="profileUsername" class="stat-value"></span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Account Type:</span>
+                        <span id="profileUserType" class="stat-value"></span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Member Since:</span>
+                        <span id="profileMemberSince" class="stat-value"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Saved Makers Section -->
+        <div class="saved-makers-section">
+            <h3>Saved Makers</h3>
+            <div id="savedMakersContainer"></div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        // Protect this page - require authentication
+        requireAuth();
+
+        // Load and display user information
+        function loadUserProfile() {
+            const user = getCurrentUser();
+            if (user) {
+                // Display welcome message
+                document.getElementById('welcomeMessage').textContent = `Welcome, ${user.username}!`;
+                
+                // Display user type badge
+                const badge = document.getElementById('userTypeBadge');
+                badge.textContent = getUserTypeDisplay(user.userType);
+                badge.style.backgroundColor = getUserTypeBadgeColor(user.userType);
+                
+                // Display profile details
+                document.getElementById('profileUsername').textContent = user.username;
+                document.getElementById('profileUserType').textContent = getUserTypeDisplay(user.userType);
+                
+                // Format and display member since date
+                const loginDate = new Date(user.loginTime);
+                document.getElementById('profileMemberSince').textContent = loginDate.toLocaleDateString();
+            }
+        }
+
+        // Load profile on page load
+        window.addEventListener('DOMContentLoaded', loadUserProfile);
+
+        // Handle profile button click
+        const profileBtn = document.getElementById('profile');
+        if (profileBtn) {
+            profileBtn.addEventListener('click', () => {
+                // Already on profile page, just reload
+                window.location.reload();
+            });
+        }
+
+        // Load and display saved makers
+        function loadSavedMakers() {
+            const savedMakers = getSavedMakers();
+            const container = document.getElementById('savedMakersContainer');
+            
+            if (savedMakers.length === 0) {
+                container.innerHTML = '<p class="no-saved-makers">You haven\'t saved any makers yet. Browse the disciplines to find makers you like!</p>';
+                return;
+            }
+
+            const gridHtml = '<div class="saved-makers-grid">' + 
+                savedMakers.map(maker => `
+                    <div class="saved-maker-card">
+                        <img src="${maker.image}" alt="${maker.name}">
+                        <h4>${maker.name}</h4>
+                        <p>${maker.discipline}</p>
+                        <a href="disciplines/makers/${maker.profileUrl}">View Profile</a>
+                        <button class="remove-maker-btn" onclick="removeSavedMaker('${maker.id}')">Remove</button>
+                    </div>
+                `).join('') + 
+            '</div>';
+            
+            container.innerHTML = gridHtml;
+        }
+
+        // Remove a saved maker
+        function removeSavedMaker(makerId) {
+            unsaveMaker(makerId);
+            loadSavedMakers(); // Refresh the display
+        }
+
+        // Load saved makers on page load
+        window.addEventListener('DOMContentLoaded', loadSavedMakers);
+    </script>
+</body>
+</html>

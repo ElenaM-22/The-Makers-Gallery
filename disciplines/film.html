@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disciplines – Video</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+    <header class="header">
+         <h2>The Makers Gallery</h2>
+            <h4>by</h4>
+        <img class="logo" src="../images/logo.jpg" alt="Artmatic Logo">
+        <h1 class="page-title">Video Production</h1>
+    </header>
+
+    <!-- Navigation bar -->
+    <nav class="nav-bar">
+        <div class="dropdown">
+            <button class="nav-btn">Disciplines</button>
+            <div class="dropdown-content">
+                <a href="film.html">Video Production</a>
+                <a href="design.html">Design</a>
+                <a href="animation.html">Animation/Game Design</a>
+                <a href="studio-arts.html">Studio Arts</a>
+            </div>
+        </div>
+
+        <button id="profile" class="nav-btn">Profile</button>
+        <button id="about" class="nav-btn">About</button>
+        <button id="contact" class="nav-btn">Contact</button>
+        <button id="home" class="nav-btn">Home</button>
+    </nav>
+
+    <!-- Profiles Section -->
+    <div class="profiles">
+
+        <div class="profile-card">
+            <img src="../images/chase-cooke/chase.jpg" class="profile-img" alt="Chase Cooke">
+            <a href="makers/chase-cooke.html" class="name-tag">Chase Cooke</a>
+            <div class="type">Cinematography</div>
+        </div>
+
+        <div class="profile-card">
+            <img src="../images/janeDoe.jpg" class="profile-img">
+            <a href="makers/dummy.html" class="name-tag">Jane Doe</a>
+            <div class="type">Documentary Filmmaking</div>
+        </div>
+
+        <div class="profile-card">
+            <img src="../images/johnDoe.jpg" class="profile-img">
+            <a href="makers/dummy.html" class="name-tag">John Doe</a>
+            <div class="type">Video Editing</div>
+        </div>
+
+        <div class="profile-card">
+            <img src="../images/jakeSmith.webp" class="profile-img">
+            <a href="makers/dummy.html" class="name-tag">Jake Smith</a>
+            <div class="type">Cinematography</div>
+        </div>
+
+        <div class="profile-card">
+            <img src="../images/johnSmith.jpg" class="profile-img">
+            <a href="makers/dummy.html" class="name-tag">John Smith</a>
+            <div class="type">Lighting</div>
+        </div>
+
+        <div class="profile-card">
+            <img src="../images/janeSmith.jpg" class="profile-img">
+            <a href="makers/dummy.html" class="name-tag">Jane Smith</a>
+            <div class="type">Video Editing</div>
+        </div>
+        
+        <div class="profile-card">
+            <img src="../images/jessicaSmith.jpg" class="profile-img">
+            <a href="makers/dummy.html" class="name-tag">Jessica Smith</a>
+            <div class="type">Scriptwriting</div>
+        </div>
+
+        <div class="profile-card">
+            <img src="../images/johnQ.jpg" class="profile-img">
+           <a href="makers/dummy.html" class="name-tag">John Q</a>
+            <div class="type">Cinematography</div>
+        </div>
+
+    </div>
+<script src="../auth.js?v=2"></script>
+<script src="../scripts.js?v=2"></script>
+<script>
+    // Override navigation paths for disciplines subfolder
+    document.getElementById('home').addEventListener('click', () => window.location.href = '../index.html');
+    document.getElementById('about').addEventListener('click', () => window.location.href = '../about.html');
+    document.getElementById('contact').addEventListener('click', () => window.location.href = '../contact.html');
+    document.getElementById('profile').addEventListener('click', () => {
+        if (typeof goToProfile === 'function') {
+            const originalGoToProfile = goToProfile;
+            window.goToProfile = function() {
+                if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+                    window.location.href = '../profile.html';
+                } else {
+                    window.location.href = '../login.html';
+                }
+            };
+            goToProfile();
+        } else {
+            window.location.href = '../login.html';
+        }
+    });
+</script>
+</body>
+</html>

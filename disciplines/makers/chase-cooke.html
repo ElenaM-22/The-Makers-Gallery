@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Artist Profile</title>
+        <link rel="stylesheet" href="../../styles.css">
+        <link rel="stylesheet" href="../../profile.css">
+    </head>
+    <body>
+
+        <!-- Header -->
+        <header class="header">
+            <h2>The Makers Gallery</h2>
+            <h4>by</h4>
+            <img class="logo" 
+                src="../../images/logo.jpg" 
+                alt="Artmatic Logo">
+
+            <!-- Navigation bar -->
+            <nav class="nav-bar">
+                <div class="dropdown">
+                    <button class="nav-btn">Disciplines</button>
+                    <div class="dropdown-content">
+                        <a href="../film.html">Video Production</a>
+                        <a href="../design.html">Design</a>
+                        <a href="../animation.html">Animation/Game Design</a>
+                        <a href="../studio-arts.html">Studio Arts</a>
+                    </div>
+                </div>
+
+                <button id="profile" class="nav-btn">Profile</button>
+                <button id="about" class="nav-btn">About</button>
+                <button id="contact" class="nav-btn">Contact</button>
+                <button id="home" class="nav-btn">Home</button>
+            </nav>
+        </header>
+
+        <!-- Main Profile Section -->
+        <section class="profile-section">
+
+            <!-- Left: Main Image -->
+            <div class="profile-img-container">
+                <img class="profile-img" 
+                    src="../../images/chase-cooke/chase.jpg" 
+                    alt="Profile Photo">
+                <button id="saveMakerBtn" class="save-maker-btn" onclick="handleSaveMaker()">Save Maker</button>
+            </div>
+
+            <!-- Right: Name + Bio + Social Icons -->
+            <div class="bio-column">
+                <h1 class="artist-name">Chase Cooke</h1>
+
+                <p class="bio-text">
+                    With years of hands-on experience under my belt, I sought to broaden my creative horizons, 
+                    exploring how to visually convey narratives. I’ve had the privilege of using my expertise 
+                    in various projects, assisting others in bringing their stories to life. I have enjoyed 
+                    every path it has led me down, and being able to share our visions with the world.
+                </p>
+                <p><a target="_blank" href="https://www.cookeproduced.com/">See Chase's work</a></p>
+
+                <div class="social-icons">
+                    <a target="_blank" href="https://www.linkedin.com/in/chase-cooke-a41337302/"><img src="../../images/insta.jpg" alt="Instagram"></a>
+                    <a target="_blank" href="https://www.instagram.com/cookeproduced/"><img src="../../images/linkedin.png" alt="LinkedIn"></a>
+                    <a target="_blank" href="https://www.youtube.com/@producedbycooke"><img src="../../images/youtube.png" alt="YouTube"></a>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Gallery Section -->
+        <section class="gallery">
+            <img src="../../images/chase-cooke/car.png" class="gallery-img">
+            <img src="../../images/chase-cooke/fashion.png" class="gallery-img">
+            <img src="../../images/chase-cooke/hoop.png" class="gallery-img">
+        </section>
+        <script src="../../auth.js?v=2"></script>
+        <script src="../../scripts.js?v=2"></script>
+        <script>
+            // Maker data
+            const makerData = {
+                id: 'chase-cooke',
+                name: 'Chase Cooke',
+                discipline: 'Video Production - Cinematography',
+                image: '../../images/chase-cooke/chase.jpg',
+                profileUrl: 'chase-cooke.html'
+            };
+
+            // Handle save/unsave maker
+            function handleSaveMaker() {
+                const btn = document.getElementById('saveMakerBtn');
+                const isSaved = toggleSaveMaker(makerData);
+                
+                if (isSaved) {
+                    btn.classList.add('saved');
+                    btn.textContent = 'Saved';
+                } else {
+                    btn.classList.remove('saved');
+                    btn.textContent = 'Save Maker';
+                }
+            }
+
+            // Update button state on page load
+            window.addEventListener('DOMContentLoaded', () => {
+                const btn = document.getElementById('saveMakerBtn');
+                if (typeof isMakerSaved === 'function' && isMakerSaved(makerData.id)) {
+                    btn.classList.add('saved');
+                    btn.textContent = 'Saved';
+                }
+            });
+
+            // Override navigation paths for disciplines/makers subfolder
+            document.getElementById('home').addEventListener('click', () => window.location.href = '../../index.html');
+            document.getElementById('about').addEventListener('click', () => window.location.href = '../../about.html');
+            document.getElementById('contact').addEventListener('click', () => window.location.href = '../../contact.html');
+            document.getElementById('profile').addEventListener('click', () => {
+                if (typeof goToProfile === 'function') {
+                    window.goToProfile = function() {
+                        if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+                            window.location.href = '../../profile.html';
+                        } else {
+                            window.location.href = '../../login.html';
+                        }
+                    };
+                    goToProfile();
+                } else {
+                    window.location.href = '../../login.html';
+                }
+            });
+        </script>
+    </body>
+</html>

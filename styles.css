@@ -1,0 +1,378 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&family=Inter:wght@400;700&display=swap');
+
+body {
+    font-family: 'Poppins', 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, Arial, sans-serif;
+    text-align: center;
+    padding: 0 20px 20px; /* remove top padding so title sits at top */
+}
+
+.title {
+    font-size: 100px;
+    font-weight: 900;
+    margin: 0; /* remove default heading margins */
+}
+
+.logo-container {
+    margin: 0; /* remove vertical spacing between logo and header */
+    padding: 0;
+    text-align: center; /* ensure logo inside this container is centered (home page) */
+}
+
+.logo {
+    width: 50px;
+    display: block;
+    margin: 0 auto; /* ensure centered without extra inline spacing */
+}
+
+/* Header layout: stack logo above title with a small controlled gap */
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px; /* tighten gap between logo and page title */
+    margin: 0;
+    padding: 0;
+}
+
+/* Tighten spacing between header elements (h2, h4, and logo) */
+.header h2 {
+    margin: 0 0 4px 0; /* small gap below h2 */
+}
+.header h4 {
+    margin: 0 0 6px 0; /* small gap below h4 before the logo */
+    font-weight: 600;
+}
+.header .logo {
+    margin: 0 0 2px 0; /* small bottom margin to control spacing */
+}
+
+/* NAVIGATION BAR */
+.nav-bar {
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.nav-btn {
+    background-color: #d60000;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* DROPDOWN MENU */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 180px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    text-align: left;
+    padding: 10px 0;
+    z-index: 5;
+}
+
+.dropdown-content a {
+    padding: 10px 18px;
+    display: block;
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Show dropdown on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.video-placeholder {
+    /* Larger, responsive video container: scales up to 1100px but stays within the viewport */
+    width: min(1100px, 92%);
+    aspect-ratio: 16 / 9;
+    background: black;
+    margin: 0 auto 24px;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Make embedded video or iframe fill the placeholder and use cover scaling */
+.video-placeholder iframe,
+.video-placeholder video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border: 0;
+    object-fit: cover;
+}
+
+.play-icon {
+    width: 0;
+    height: 0;
+    border-top: 45px solid transparent;
+    border-bottom: 45px solid transparent;
+    border-left: 70px solid white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-40%, -50%);
+}
+
+
+#intro{
+    max-width:80%;
+    font-size:18px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.page-title {
+    font-size: 50px;
+    font-weight: 900;
+    margin: 0 0 2px 0; /* tightened bottom spacing before nav */
+}
+
+.nav-bar {
+    margin: 2px 0 30px 0; /* even tighter top gap from title */
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.nav-btn {
+    background-color: #005ce6;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Profiles Grid: 3 cards per row, centered items */
+.profiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* four cards per row */
+    gap: 16px; /* slightly tighter gutters for smaller cards */
+    align-items: start;
+    justify-items: center; /* center items within each grid cell */
+    max-width: 1100px; /* slightly narrower container */
+    margin: 0 auto 36px;
+    padding: 0 8px;
+}
+
+/* Card Frame */
+.profile-card {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 230px; /* slightly smaller card width */
+}
+
+/* Placeholder Headshot Box — slightly larger */
+.profile-img {
+    width: 210px; /* reduced from 230 to 210 for a tighter layout */
+    height: 210px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 5px solid #ffcc00;   /* slightly thinner border */
+}
+
+/* Name Tags */
+.name-tag {
+    margin-top: 8px;
+    background-color: #d60000;
+    color: white;
+    border-radius: 9px;
+    padding: 6px 10px; /* slightly smaller */
+    font-size: 15px; /* reduced text size */
+    font-weight: 700;
+    display: inline-block;
+    cursor: pointer; /* indicate clickable */
+    user-select: none;
+    transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.06);
+    text-decoration: none;
+}
+
+/* Hover / Active / Focus styles to behave like a button */
+.name-tag:hover {
+    background-color: #bf0000;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+.name-tag:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+.name-tag:focus-visible {
+    outline: 3px solid rgba(214, 0, 0, 0.15);
+    outline-offset: 3px;
+}
+
+/* If using keyboard, let the element be focusable via tabindex in HTML; this just defines the focus appearance */
+
+/* Responsive breakpoints */
+/* Responsive breakpoints for 4/3/2/1 columns */
+@media (max-width: 1100px) {
+    .profiles {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .profile-img {
+        width: 190px;
+        height: 190px;
+        border-width: 5px;
+    }
+}
+
+@media (max-width: 820px) {
+    .profiles {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .profile-img {
+        width: 170px;
+        height: 170px;
+        border-width: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .profiles {
+        grid-template-columns: 1fr;
+    }
+    .profile-img {
+        width: 150px;
+        height: 150px;
+        border-width: 3px;
+    }
+}
+
+/* MAIN PROFILE SECTION */
+.profile-section {
+    display: flex;
+    justify-content: center; /* center the image + bio block inside the page */
+    align-items: flex-start;
+    gap: 32px;
+    margin-bottom: 50px;
+    max-width: 1200px; /* keep same max width as gallery */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 8px;
+}
+
+/* Scope main-profile images so they don't override the grid .profile-img rules */
+.profile-section .profile-img {
+    width: 300px;
+    height: 300px;
+    border: 8px solid #cc0000; /* red border for main profile view only */
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+/* BIO + SOCIAL */
+.bio-column {
+    width: 420px;
+    text-align: left;
+}
+
+/* Position social icons as a right-aligned vertical column inside the bio area */
+.bio-column {
+    position: relative;
+    padding-right: 72px; /* room for the vertical icons */
+}
+
+.social-icons {
+    position: absolute;
+    right: 0;
+    top: 50%; /* center vertically inside the bio column */
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+}
+
+.social-icons img {
+    width: 40px;
+    margin: 0; /* remove previous right margin */
+    cursor: pointer;
+}
+
+.artist-name {
+    font-size: 50px;
+    font-weight: 900;
+    margin: 0; /* remove top margin so top aligns with profile image */
+}
+
+.bio-text {
+    font-size: 16px;
+    line-height: 1.45;
+    margin-bottom: 20px;
+}
+
+/* (no additional social icon styles) */
+
+/* GALLERY IMAGES */
+.gallery {
+    display: flex;
+    justify-content: center; /* center gallery images under the profile section */
+    gap: 32px;
+    max-width: 1200px;
+    margin: 0 auto 40px;
+    padding: 0 8px;
+}
+
+.gallery-img {
+    width: 240px;
+    height: 240px;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 6px solid #0070ff;
+}
+
+/* Remove underline for bio links and style slightly */
+.bio-column a {
+    text-decoration: none;
+    color: #005ce6;
+}
+.bio-column a:visited {
+    color: #003a9e;
+}
+
+        /* Home-page only size tweaks: enlarge the "by" line and the logo here only */
+        #by-line {
+            font-size: 50px; /* larger than default h2 */
+            margin: 6px 0 10px 0;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+        }
+        .logo {
+            width: 320px; /* larger logo on home page only */
+            max-width: 60vw;
+            height: auto;
+            display: block;
+            margin: 6px auto 12px auto;
+        }
+        @media (max-width: 600px) {
+            #by-line { font-size: 48px; }
+            .logo { width: 220px; }
+        }

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Maker's Gallery</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <h1 class="title">The Maker’s Gallery</h1>
+	<h2 id="by-line">by</h2>
+
+    <!-- artmatic logo -->
+    <div class="logo-container">
+        <img src="images/logo2.png" alt="Artmatic logo" class="logo">
+    </div>
+
+    <!-- Navigation bar -->
+    <nav class="nav-bar">
+        <div class="dropdown">
+            <button class="nav-btn">Disciplines</button>
+            <div class="dropdown-content">
+                <a href="disciplines/film.html">Video Production</a>
+                <a href="disciplines/design.html">Design</a>
+                <a href="disciplines/animation.html">Animation/Game Design</a>
+                <a href="disciplines/studio-arts.html">Studio Arts</a>
+            </div>
+        </div>
+
+        <button id="profile" class="nav-btn">Profile</button>
+        <button id="about" class="nav-btn">About</button>
+        <button id="contact" class="nav-btn">Contact</button>
+        <button id="home" class="nav-btn">Home</button>
+    </nav>
+
+	<p id="intro">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The Maker's Gallery is a professional online hub where SVAD students can showcase their work across creative disciplines. The platform connects student artists with real world opportunities and fosters local community engagement with creatives.</p>
+    <div class="video-placeholder">
+        <video controls preload="none" playsinline poster="images/poster.png">
+            <source src="images/The Makers Gallery_pass1.mp4" type="video/mp4">
+            Your browser does not support the video tag. <!--should not happen-->
+        </video>
+    </div>
+<script src="auth.js?v=2"></script>
+<script src="scripts.js?v=2"></script>
+</body>

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Contact — Feature a Student | Artmatic</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="contact.css">
+   
+</head>
+<body>
+    <main class="page">
+        <header class="hero">
+
+         <h2>The Makers Gallery</h2>
+            <h4>by</h4>
+        <img class="logo" src="images/logo.jpg" alt="Artmatic Logo">
+
+        <!-- Navigation bar -->
+        <nav class="nav-bar">
+            <div class="dropdown">
+                <button class="nav-btn">Disciplines</button>
+                <div class="dropdown-content">
+                    <a href="disciplines/film.html">Video Production</a>
+                    <a href="disciplines/design.html">Design</a>
+                    <a href="disciplines/animation.html">Animation/Game Design</a>
+                    <a href="disciplines/studio-arts.html">Studio Arts</a>
+                </div>
+            </div>
+
+            <button id="profile" class="nav-btn">Profile</button>
+            <button id="about" class="nav-btn">About</button>
+            <button id="contact" class="nav-btn">Contact</button>
+            <button id="home" class="nav-btn">Home</button>
+        </nav>
+        
+            <div>
+                <h1>Apply to be Featured</h1>
+                <p class="lead">SVAD is excited to discover new talent. Fill out this quick form to apply for a featured student profile. Please note that this is only open for students, instructors, and alumni at the University of South Carolina. If you're looking to get in contact with an artist, please refer to the contact information on their profile/portfolio.</p>
+            </div>
+        </header>
+
+        <!--contact form-->
+        <section class="card">
+            <form id="contactForm" class="contact-form" action="#" method="POST" enctype="multipart/form-data" novalidate>
+                <input type="hidden" name="access_key" value="2aa8a7c4-78b9-41ca-ae04-93643c34b79b">
+                
+                <div>
+                    <div class="field">
+                        <label for="name">Full name *</label>
+                        <input id="name" name="name" type="text" required placeholder="Jane Doe" />
+                    </div>
+
+                    <div class="field">
+                        <label for="email">Email address *</label>
+                        <input id="email" name="email" type="email" required placeholder="you@example.com" />
+                        <div class="small">We will only use this to contact you about your application.</div>
+                    </div>
+
+                    <!--dropdown options for level-->
+                    <div class="field">
+                        <label for="role">Current role / level</label>
+                        <select id="role" name="role" aria-label="Current role or level">
+                            <option value="">Select (e.g., Undergraduate-Sophomore, Graduate Student, Alumni)</option>
+                            <option>Undergraduate-Sophomore</option>
+                            <option>Undergraduate-Junior</option>
+                            <option>Undergraduate-Senior</option>
+                            <option>Graduate Student</option>
+                            <option>Instructor/Professor</option>
+                            <option>Alumni</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="portfolio">Portfolio URL / Profile</label>
+                        <input id="portfolio" name="portfolio" type="url" placeholder="https://your-portfolio.example" />
+                        <div class="small">Provide a public link (Behance, Instagram, ArtStation, personal site).</div>
+                    </div>
+
+                    <div class="field">
+                        <label for="bio">Short bio *</label>
+                        <textarea id="bio" name="bio" required placeholder="Tell us about you and your creative process in 2–4 sentences"></textarea>
+                        <div class="small">What makes your work or story interesting? Don't worry- you can change it later if your application is approved(150–300 characters recommended)</div>
+                    </div>
+
+                    <!--info will need to be manually added rather than accessed-->
+                    <div class="field">
+                        <label for="social">Social links (comma separated)</label>
+                        <input id="social" name="social" type="text" placeholder="@instagram, https://twitter.com/you" />
+                    </div>
+
+                    <div class="field">
+                        <label for="contactPref">Preferred contact method</label>
+                        <select id="contactPref" name="contactPref">
+                            <option>Email</option>
+                            <option>DM on social</option>
+                            <option>Portfolio site contact</option>
+                        </select>
+                    </div>
+
+                    <!--checkbox that acts as consent form-->
+                    <div class="field">
+                        <label class="consent"><input id="consent" name="consent" type="checkbox" required /> I consent to having my work and profile featured on Artmatic if selected.</label>
+                        <div class="meta">By checking this you confirm you own the submitted work or have permission to share it.</div>
+                    </div>
+
+                    <div class="errors" id="errors" aria-live="polite"></div>
+                </div>
+
+                <aside class="right-column">
+                    <div class="upload-box">
+                        <label for="artwork" style="width:100%;cursor:pointer;">
+                            <div style="font-weight:700;color:#222">Upload sample artwork</div>
+                            <div class="small">PNG, JPG, GIF. Max 5MB. Up to 3 files recommended.</div>
+                            <input id="artwork" name="artwork" type="file" accept="image/*" multiple style="display:none" />
+                        </label>
+                        <div id="previews"></div>
+                        <div class="small">Tip: choose a strong representative piece.</div>
+                    </div>
+
+                    <div class="field" style="margin-top:auto;">
+                        <button type="submit" class="btn">Submit application</button>
+                        <button type="button" id="resetBtn" class="btn secondary" style="margin-left:8px;">Reset</button>
+                    </div>
+
+                    <div class="card" style="background:transparent;padding:0;box-shadow:none;border-top:1px solid #f0f2fb;margin-top:6px;">
+                        <div class="small">What happens next?</div>
+                        <div class="meta">Our curators review applications every two weeks. We will be in contact to verify your relationship to the University of South Carolina, which may include providing a USC ID or proof of graduation. If eligible, we will contact you to arrange a featured profile and higher-resolution assets.</div>
+                    </div>
+
+                    <div id="contact-result"></div>
+                                                
+                    <div class="success-msg" id="success">Thanks! Your application has been sent.</div>
+                </aside>
+            </form>
+        </section>
+    </main>
+    <script src="auth.js?v=2"></script>
+    <script src="scripts.js?v=2"></script>
+</body>
+</html>

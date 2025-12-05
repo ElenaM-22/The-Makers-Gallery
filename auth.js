@@ -1,4 +1,4 @@
-// Authentication System using LocalStorage
+// Authentication System using Firebase
 
 // Switch between Login and Signup forms
 function switchToSignup() {
@@ -27,8 +27,8 @@ function clearMessage() {
     messageEl.className = 'auth-message';
 }
 
-// Handle Signup
-function handleSignup() {
+// Handle Signup with Firebase
+async function handleSignup() {
     const username = document.getElementById('signupUsername').value.trim();
     const password = document.getElementById('signupPassword').value;
     const confirmPassword = document.getElementById('signupConfirmPassword').value;
@@ -55,36 +55,48 @@ function handleSignup() {
         return false;
     }
 
-    // Check if username already exists
-    const users = getUsers();
-    if (users[username]) {
-        showMessage('Username already exists', 'error');
-        return false;
+    try {
+        // Check if username already exists
+        const usernameDoc = await db.collection('usernames').doc(username.toLowerCase()).get();
+        if (usernameDoc.exists) {
+            showMessage('Username already exists', 'error');
+            return false;
+        }
+
+        // Create Firebase user with email format (username@makergallery.local)
+        const email = username.toLowerCase() + '@makergallery.local';
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        
+        // Store user data in Firestore
+        await db.collection('users').doc(userCredential.user.uid).set({
+            username: username,
+            userType: userType,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // Reserve the username
+        await db.collection('usernames').doc(username.toLowerCase()).set({
+            uid: userCredential.user.uid
+        });
+
+        showMessage('Account created successfully! Please login.', 'success');
+        
+        // Clear form and switch to login after 2 seconds
+        setTimeout(() => {
+            document.getElementById('signupFormElement').reset();
+            switchToLogin();
+        }, 2000);
+
+    } catch (error) {
+        console.error('Signup error:', error);
+        showMessage(error.message || 'Signup failed', 'error');
     }
-
-    // Create new user
-    users[username] = {
-        password: password,
-        userType: userType,
-        createdAt: new Date().toISOString()
-    };
-
-    // Save to localStorage
-    localStorage.setItem('users', JSON.stringify(users));
-
-    showMessage('Account created successfully! Please login.', 'success');
-    
-    // Clear form and switch to login after 2 seconds
-    setTimeout(() => {
-        document.getElementById('signupFormElement').reset();
-        switchToLogin();
-    }, 2000);
 
     return false;
 }
 
-// Handle Login
-function handleLogin() {
+// Handle Login with Firebase
+async function handleLogin() {
     const username = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value;
 
@@ -94,70 +106,78 @@ function handleLogin() {
         return false;
     }
 
-    // Check credentials
-    const users = getUsers();
-    if (!users[username]) {
-        showMessage('Username not found', 'error');
-        return false;
+    try {
+        // Convert username to email format
+        const email = username.toLowerCase() + '@makergallery.local';
+        
+        // Sign in with Firebase
+        await auth.signInWithEmailAndPassword(email, password);
+        
+        showMessage('Login successful! Redirecting...', 'success');
+
+        // Redirect to profile page after 1.5 seconds
+        setTimeout(() => {
+            window.location.href = 'profile.html';
+        }, 1500);
+
+    } catch (error) {
+        console.error('Login error:', error);
+        if (error.code === 'auth/user-not-found') {
+            showMessage('Username not found', 'error');
+        } else if (error.code === 'auth/wrong-password') {
+            showMessage('Incorrect password', 'error');
+        } else {
+            showMessage('Login failed', 'error');
+        }
     }
-
-    if (users[username].password !== password) {
-        showMessage('Incorrect password', 'error');
-        return false;
-    }
-
-    // Login successful
-    const currentUser = {
-        username: username,
-        userType: users[username].userType,
-        loginTime: new Date().toISOString()
-    };
-
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-    showMessage('Login successful! Redirecting...', 'success');
-
-    // Redirect to profile page after 1.5 seconds
-    setTimeout(() => {
-        window.location.href = 'profile.html';
-    }, 1500);
 
     return false;
 }
 
-// Helper function to get all users from localStorage
-function getUsers() {
-    const usersJSON = localStorage.getItem('users');
-    return usersJSON ? JSON.parse(usersJSON) : {};
-}
 
 // Check if user is logged in
 function isLoggedIn() {
-    const currentUser = localStorage.getItem('currentUser');
-    return currentUser !== null;
+    return auth.currentUser !== null;
 }
 
-// Get current user
-function getCurrentUser() {
-    const currentUser = localStorage.getItem('currentUser');
-    return currentUser ? JSON.parse(currentUser) : null;
+// Get current user data
+async function getCurrentUser() {
+    const user = auth.currentUser;
+    if (!user) return null;
+
+    try {
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        if (userDoc.exists) {
+            return userDoc.data();
+        }
+    } catch (error) {
+        console.error('Error getting user data:', error);
+    }
+    return null;
 }
 
 // Logout function
-function logout() {
-    localStorage.removeItem('currentUser');
-    window.location.href = 'login.html';
+async function logout() {
+    try {
+        await auth.signOut();
+        window.location.href = 'login.html';
+    } catch (error) {
+        console.error('Logout error:', error);
+    }
 }
 
 // Protect pages (call this on pages that require authentication)
 function requireAuth() {
-    if (!isLoggedIn()) {
-        window.location.href = 'login.html';
-    }
+    auth.onAuthStateChanged((user) => {
+        if (!user) {
+            window.location.href = 'login.html';
+        }
+    });
 }
 
 // Navigate to profile (checks if logged in first)
 function goToProfile() {
-    if (isLoggedIn()) {
+    if (auth.currentUser) {
         window.location.href = 'profile.html';
     } else {
         window.location.href = 'login.html';
@@ -188,66 +208,77 @@ function getUserTypeDisplay(userType) {
 
 // FAVORITES/SAVED MAKERS FUNCTIONALITY
 
-// Save a maker to user's favorites
-function saveMaker(makerData) {
-    if (!isLoggedIn()) {
+// Save a maker to user's favorites in Firebase
+async function saveMaker(makerData) {
+    const user = auth.currentUser;
+    if (!user) {
         alert('Please log in to save makers');
         window.location.href = '../../login.html';
         return false;
     }
 
-    const user = getCurrentUser();
-    const savedMakers = getSavedMakers();
-    
-    // Check if already saved
-    const existingIndex = savedMakers.findIndex(m => m.id === makerData.id);
-    if (existingIndex === -1) {
-        savedMakers.push(makerData);
-        localStorage.setItem('savedMakers_' + user.username, JSON.stringify(savedMakers));
+    try {
+        await db.collection('users').doc(user.uid).collection('savedMakers').doc(makerData.id).set({
+            ...makerData,
+            savedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
         return true;
+    } catch (error) {
+        console.error('Error saving maker:', error);
+        return false;
     }
-    return false;
 }
 
 // Remove a maker from favorites
-function unsaveMaker(makerId) {
-    if (!isLoggedIn()) {
+async function unsaveMaker(makerId) {
+    const user = auth.currentUser;
+    if (!user) return false;
+
+    try {
+        await db.collection('users').doc(user.uid).collection('savedMakers').doc(makerId).delete();
+        return true;
+    } catch (error) {
+        console.error('Error removing maker:', error);
         return false;
     }
-
-    const user = getCurrentUser();
-    const savedMakers = getSavedMakers();
-    const filteredMakers = savedMakers.filter(m => m.id !== makerId);
-    
-    localStorage.setItem('savedMakers_' + user.username, JSON.stringify(filteredMakers));
-    return true;
 }
 
 // Get all saved makers for current user
-function getSavedMakers() {
-    if (!isLoggedIn()) {
+async function getSavedMakers() {
+    const user = auth.currentUser;
+    if (!user) return [];
+
+    try {
+        const snapshot = await db.collection('users').doc(user.uid).collection('savedMakers').get();
+        return snapshot.docs.map(doc => doc.data());
+    } catch (error) {
+        console.error('Error getting saved makers:', error);
         return [];
     }
-
-    const user = getCurrentUser();
-    const savedJSON = localStorage.getItem('savedMakers_' + user.username);
-    return savedJSON ? JSON.parse(savedJSON) : [];
 }
 
 // Check if a maker is saved
-function isMakerSaved(makerId) {
-    const savedMakers = getSavedMakers();
-    return savedMakers.some(m => m.id === makerId);
-}
+async function isMakerSaved(makerId) {
+    const user = auth.currentUser;
+    if (!user) return false;
 
-// Toggle save/unsave maker
-function toggleSaveMaker(makerData) {
-    if (isMakerSaved(makerData.id)) {
-        unsaveMaker(makerData.id);
-        return false; // unsaved
-    } else {
-        saveMaker(makerData);
-        return true; // saved
+    try {
+        const doc = await db.collection('users').doc(user.uid).collection('savedMakers').doc(makerId).get();
+        return doc.exists;
+    } catch (error) {
+        console.error('Error checking saved maker:', error);
+        return false;
     }
 }
 
+// Toggle save/unsave maker
+async function toggleSaveMaker(makerData) {
+    const saved = await isMakerSaved(makerData.id);
+    if (saved) {
+        await unsaveMaker(makerData.id);
+        return false; // unsaved
+    } else {
+        await saveMaker(makerData);
+        return true; // saved
+    }
+}

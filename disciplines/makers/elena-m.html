@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Artist Profile</title>
+        <link rel="stylesheet" href="../../styles.css">
+        <link rel="stylesheet" href="../../profile.css">
+    </head>
+    <body>
+
+        <!-- Header -->
+        <header class="header">
+            <h2>The Makers Gallery</h2>
+            <h4>by</h4>
+            <img class="logo" 
+                src="../../images/logo.jpg" 
+                alt="Artmatic Logo">
+
+            <!-- Navigation bar -->
+            <nav class="nav-bar">
+                <div class="dropdown">
+                    <button class="nav-btn">Disciplines</button>
+                    <div class="dropdown-content">
+                        <a href="../film.html">Video Production</a>
+                        <a href="../design.html">Design</a>
+                        <a href="../animation.html">Animation/Game Design</a>
+                        <a href="../studio-arts.html">Studio Arts</a>
+                    </div>
+                </div>
+
+                <button id="profile" class="nav-btn">Profile</button>
+                <button id="about" class="nav-btn">About</button>
+                <button id="contact" class="nav-btn">Contact</button>
+                <button id="home" class="nav-btn">Home</button>
+            </nav>
+        </header>
+
+        <!-- Main Profile Section -->
+        <section class="profile-section">
+
+            <!-- Left: Main Image -->
+            <div class="profile-img-container">
+                <img class="profile-img" 
+                    src="../../images/chase-cooke/chase.jpg" 
+                    alt="Profile Photo">
+                <button id="saveMakerBtn" class="save-maker-btn" onclick="handleSaveMaker()">Save Maker</button>
+            </div>
+
+            <!-- Right: Name + Bio + Social Icons -->
+            <div class="bio-column">
+                <h1 class="artist-name">Elena Maddox</h1>
+
+                <p class="bio-text">
+                    Hello! My name is Elena, a rural Georgia-born artist. I'm a 3rd year student at the University of South Carolina with an interest in video game design and compositing. I am currently studying Media Arts with experience in videography, design, and new media. I am also pursuing a minor in Computer Science, with basic experience in HTML, Python, and Java. I visit antique stores and bake copious amounts of chocolate chip cookies in my free time.
+                </p>
+                <p><a target="_blank" href="https://elenamaddoxart.myportfolio.com/">See Elena's work</a></p>
+
+                <div class="social-icons">
+                    <a target="_blank" href="https://www.linkedin.com/in/payton-maddox-013a1b359/"><img src="../../images/linkedin.png" alt="LinkedIn"></a>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Gallery Section -->
+        <section class="gallery">
+            <img src="../../images/chase-cooke/car.png" class="gallery-img">
+            <img src="../../images/chase-cooke/fashion.png" class="gallery-img">
+            <img src="../../images/chase-cooke/hoop.png" class="gallery-img">
+        </section>
+        <!-- Firebase Scripts -->
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+        <script src="../../firebase-config.js"></script>
+        <script src="../../auth.js?v=2"></script>
+        <script src="../../scripts.js?v=2"></script>
+        <script>
+            // Maker data
+            const makerData = {
+                id: 'elena-m',
+                name: 'Elena Maddox',
+                discipline: 'Animation/Game Design - Animation',
+                image: '../../images/chase-cooke/chase.jpg',
+                profileUrl: 'elena-m.html'
+            };
+
+            // Handle save/unsave maker
+            function handleSaveMaker() {
+                const btn = document.getElementById('saveMakerBtn');
+                const isSaved = toggleSaveMaker(makerData);
+                
+                if (isSaved) {
+                    btn.classList.add('saved');
+                    btn.textContent = 'Saved';
+                } else {
+                    btn.classList.remove('saved');
+                    btn.textContent = 'Save Maker';
+                }
+            }
+
+            // Update button state on page load
+            window.addEventListener('DOMContentLoaded', () => {
+                const btn = document.getElementById('saveMakerBtn');
+                if (typeof isMakerSaved === 'function' && isMakerSaved(makerData.id)) {
+                    btn.classList.add('saved');
+                    btn.textContent = 'Saved';
+                }
+            });
+
+            // Override navigation paths for disciplines/makers subfolder
+            document.getElementById('home').addEventListener('click', () => window.location.href = '../../index.html');
+            document.getElementById('about').addEventListener('click', () => window.location.href = '../../about.html');
+            document.getElementById('contact').addEventListener('click', () => window.location.href = '../../contact.html');
+            document.getElementById('profile').addEventListener('click', () => {
+                if (typeof goToProfile === 'function') {
+                    window.goToProfile = function() {
+                        if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+                            window.location.href = '../../profile.html';
+                        } else {
+                            window.location.href = '../../login.html';
+                        }
+                    };
+                    goToProfile();
+                } else {
+                    window.location.href = '../../login.html';
+                }
+            });
+        </script>
+    </body>
+</html>

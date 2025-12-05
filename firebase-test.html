@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Test - The Maker's Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 { color: #d60000; }
+        h2 { color: #333; }
+        button {
+            background: #0070ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0055cc; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: #0070ff; }
+        #results {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔥 Firebase Connection Test</h1>
+    <p>Use this page to verify your Firebase setup is working correctly.</p>
+
+    <div class="test-section">
+        <h2>1. Firebase Initialization</h2>
+        <button onclick="testFirebaseInit()">Test Firebase Connection</button>
+        <div id="initResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Create Test Account</h2>
+        <p>This will create a test account: <code>testuser@makergallery.local</code></p>
+        <button onclick="testCreateAccount()">Create Test Account</button>
+        <p style="color: #666; font-size: 14px; margin-top: 10px;">Note: If you see "email-already-in-use" error, that's OK! It means the test account already exists. Just proceed to step 3 to test login.</p>
+        <div id="createResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Test Login</h2>
+        <button onclick="testLogin()">Login with Test Account</button>
+        <div id="loginResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Test Firestore Write</h2>
+        <button onclick="testFirestoreWrite()">Test Database Write</button>
+        <div id="firestoreResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>5. Current User Status</h2>
+        <button onclick="checkCurrentUser()">Check Current User</button>
+        <button onclick="testLogout()">Logout</button>
+        <div id="userResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Console Output</h2>
+        <div id="results"></div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <script>
+        function log(message, type = 'info') {
+            const results = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            results.innerHTML += `[${timestamp}] ${message}\n`;
+            console.log(message);
+        }
+
+        function showResult(elementId, message, isSuccess) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = `<p class="${isSuccess ? 'success' : 'error'}">${message}</p>`;
+        }
+
+        async function testFirebaseInit() {
+            try {
+                log('Testing Firebase initialization...');
+                if (typeof firebase !== 'undefined') {
+                    log('✅ Firebase SDK loaded successfully');
+                    log(`Project ID: ${firebase.app().options.projectId}`);
+                    log(`Auth Domain: ${firebase.app().options.authDomain}`);
+                    showResult('initResult', '✅ Firebase is initialized correctly!', true);
+                } else {
+                    throw new Error('Firebase SDK not loaded');
+                }
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+                showResult('initResult', `❌ Firebase initialization failed: ${error.message}`, false);
+            }
+        }
+
+        async function testCreateAccount() {
+            try {
+                log('Creating test account...');
+                const testEmail = 'testuser@makergallery.local';
+                const testPassword = 'test1234';
+                
+                // Try to create account
+                const userCredential = await auth.createUserWithEmailAndPassword(testEmail, testPassword);
+                log(`✅ Account created: ${userCredential.user.uid}`);
+                
+                // Try to write to Firestore
+                await db.collection('users').doc(userCredential.user.uid).set({
+                    username: 'testuser',
+                    userType: 'student',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                log('✅ User data saved to Firestore');
+                
+                // Reserve username
+                await db.collection('usernames').doc('testuser').set({
+                    uid: userCredential.user.uid
+                });
+                log('✅ Username reserved in Firestore');
+                
+                showResult('createResult', '✅ Test account created successfully!', true);
+            } catch (error) {
+                log(`❌ Error: ${error.code} - ${error.message}`, 'error');
+                if (error.code === 'auth/email-already-in-use') {
+                    showResult('createResult', '⚠️ Test account already exists (this is OK)', true);
+                } else if (error.code === 'permission-denied') {
+                    showResult('createResult', '❌ Firestore permission denied - Check security rules!', false);
+                } else {
+                    showResult('createResult', `❌ Failed: ${error.message}`, false);
+                }
+            }
+        }
+
+        async function testLogin() {
+            try {
+                log('Attempting login...');
+                const testEmail = 'testuser@makergallery.local';
+                const testPassword = 'test1234';
+                
+                const userCredential = await auth.signInWithEmailAndPassword(testEmail, testPassword);
+                log(`✅ Login successful: ${userCredential.user.uid}`);
+                
+                // Try to read user data
+                const userDoc = await db.collection('users').doc(userCredential.user.uid).get();
+                if (userDoc.exists) {
+                    log(`✅ User data retrieved: ${JSON.stringify(userDoc.data())}`);
+                    showResult('loginResult', '✅ Login and data retrieval successful!', true);
+                } else {
+                    log('⚠️ User authenticated but no Firestore data found');
+                    showResult('loginResult', '⚠️ Login OK but no user data in Firestore', false);
+                }
+            } catch (error) {
+                log(`❌ Error: ${error.code} - ${error.message}`, 'error');
+                showResult('loginResult', `❌ Login failed: ${error.message}`, false);
+            }
+        }
+
+        async function testFirestoreWrite() {
+            try {
+                const user = auth.currentUser;
+                if (!user) {
+                    throw new Error('Not logged in. Please create account and login first.');
+                }
+                
+                log('Testing Firestore write permissions...');
+                
+                // Try to write to savedMakers
+                await db.collection('users').doc(user.uid).collection('savedMakers').doc('test-maker').set({
+                    id: 'test-maker',
+                    name: 'Test Maker',
+                    discipline: 'Testing',
+                    savedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                log('✅ Firestore write successful');
+                
+                // Try to read it back
+                const doc = await db.collection('users').doc(user.uid).collection('savedMakers').doc('test-maker').get();
+                if (doc.exists) {
+                    log('✅ Firestore read successful');
+                    showResult('firestoreResult', '✅ Firestore read/write working correctly!', true);
+                }
+            } catch (error) {
+                log(`❌ Error: ${error.code} - ${error.message}`, 'error');
+                showResult('firestoreResult', `❌ Firestore error: ${error.message}`, false);
+            }
+        }
+
+        async function checkCurrentUser() {
+            const user = auth.currentUser;
+            if (user) {
+                log(`Current user: ${user.email}`);
+                log(`UID: ${user.uid}`);
+                
+                try {
+                    const userDoc = await db.collection('users').doc(user.uid).get();
+                    if (userDoc.exists) {
+                        log(`User data: ${JSON.stringify(userDoc.data())}`);
+                        showResult('userResult', `✅ Logged in as: ${userDoc.data().username}`, true);
+                    } else {
+                        showResult('userResult', '⚠️ Logged in but no user data found', false);
+                    }
+                } catch (error) {
+                    showResult('userResult', `❌ Error reading user data: ${error.message}`, false);
+                }
+            } else {
+                log('No user logged in');
+                showResult('userResult', 'Not logged in', false);
+            }
+        }
+
+        async function testLogout() {
+            try {
+                await auth.signOut();
+                log('✅ Logged out successfully');
+                showResult('userResult', 'Logged out', true);
+            } catch (error) {
+                log(`❌ Logout error: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-check on load
+        window.addEventListener('load', () => {
+            log('=== Firebase Test Page Loaded ===');
+            testFirebaseInit();
+        });
+    </script>
+</body>
+</html>

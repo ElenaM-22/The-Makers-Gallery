@@ -40,8 +40,20 @@ async function handleSignup() {
         return false;
     }
 
+    // Check if username contains @ symbol (user entered email)
+    if (username.includes('@')) {
+        showMessage('Please enter a username, not an email address', 'error');
+        return false;
+    }
+
     if (username.length < 3) {
         showMessage('Username must be at least 3 characters', 'error');
+        return false;
+    }
+
+    // Check for valid username format (alphanumeric, dashes, underscores only)
+    if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+        showMessage('Username can only contain letters, numbers, dashes, and underscores', 'error');
         return false;
     }
 
@@ -106,9 +118,17 @@ async function handleLogin() {
         return false;
     }
 
+    // Check if user entered email instead of username
+    if (username.includes('@')) {
+        showMessage('Please enter your username, not an email address', 'error');
+        return false;
+    }
+
     try {
         // Convert username to email format
         const email = username.toLowerCase() + '@makergallery.local';
+        
+        console.log('Attempting login with email:', email);
         
         // Sign in with Firebase
         await auth.signInWithEmailAndPassword(email, password);
@@ -122,12 +142,18 @@ async function handleLogin() {
 
     } catch (error) {
         console.error('Login error:', error);
+        console.error('Error code:', error.code);
+        console.error('Error message:', error.message);
+        console.error('Attempted email:', username.toLowerCase() + '@makergallery.local');
+        
         if (error.code === 'auth/user-not-found') {
-            showMessage('Username not found', 'error');
+            showMessage('Account not found. Please create an account first.', 'error');
         } else if (error.code === 'auth/wrong-password') {
             showMessage('Incorrect password', 'error');
+        } else if (error.code === 'auth/invalid-email') {
+            showMessage('Invalid username format. Use only letters, numbers, dashes, and underscores.', 'error');
         } else {
-            showMessage('Login failed', 'error');
+            showMessage(`Login failed: ${error.message}`, 'error');
         }
     }
 
